@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/fontawesome/css/all.css">
+    <title>Document</title>
+    <style>
+        .photo {
+            display: inline-block;
+            position: relative;
+            width: 200px;
+            height: 200px;
+            border: 1px solid blue;
+        }
+
+        .photo img {
+            position: absolute;
+            width: 100%;
+        }
+
+        .photo .remove {
+            color: red;
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <form name="form1">
+        <input type="file" accept="image/*" id="myi" name="photos" multiple onchange="upload()">
+    </form>
+    <div id="photo-div">
+        <!--
+        <div class="photo">
+            <img src="/uploads/1a3b3db0-a9b0-46b3-b15c-98190ff75269.png" alt="" >
+            <span class="remove" onclick="removeItem(event)">
+                <i class="fa-solid fa-circle-xmark"></i>
+            </span>
+        </div>
+    -->
+    </div>
+
+
+
+    <script>
+        let photoData = []
+
+        const item_tpl_func = ({ filename }) =>
+            `<div class="photo" data-id="${filename}">
+                <img src="/uploads/${filename}" alt="" >
+                <span class="remove" onclick="removeItem(event)">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                </span>
+            </div>`;
+
+
+        async function upload() {
+            const fd = new FormData(document.form1);
+
+            const r = await fetch("/try-upload2", {
+                method: "POST",
+                body: fd
+            });
+
+            const result = await r.json();
+            // photoData = [...photoData, ...result];
+            photoData.push(...result);
+
+            console.log(result)
+
+            let str = "";
+            str = photoData.map(obj => item_tpl_func(obj)).join("");
+            document.querySelector("#photo-div").innerHTML = str;
+
+            // if (result && result.length) {
+
+            //     //map帶出的資料會是陣列形式
+            //     result.map(obj => item_tpl_func(obj))
+
+            //     // result.forEach(obj => {
+            //     //     str += item_tpl_func(obj);
+            //     // });
+            //     console.log(str)
+            // }
+
+
+        }
+        function removeItem(event) {
+            const item = event.target.closest(".photo");
+            const id = item.getAttribute("data-id");
+            console.log(id);
+            item.remove();
+        }
+    </script>
+</body>
+
+</html>

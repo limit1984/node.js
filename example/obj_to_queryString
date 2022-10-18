@@ -1,0 +1,26 @@
+
+str = "?a=1&b=2";
+'?a=1&b=2'
+
+usp = new URLSearchParams(str)
+URLSearchParams {}[[Prototype]]: URLSearchParamsappend: ƒ append()delete: ƒ delete()entries: ƒ entries()forEach: ƒ forEach()get: ƒ ()getAll: ƒ getAll()has: ƒ has()keys: ƒ keys()set: ƒ ()sort: ƒ sort()toString: ƒ toString()values: ƒ values()constructor: ƒ URLSearchParams()Symbol(Symbol.iterator): ƒ entries()Symbol(Symbol.toStringTag): "URLSearchParams"[[Prototype]]: Object
+
+usp.get("a")
+'1'
+
+usp.get("b")
+'2'
+
+usp.toString()
+'a=1&b=2'
+
+obj = {c:3 , d:4}
+{c: 3, d: 4}
+
+usp2 = new URLSearchParams(obj)
+URLSearchParams {}
+
+usp2.toString()
+'c=3&d=4'
+
+location.search

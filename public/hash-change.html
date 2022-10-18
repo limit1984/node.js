@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .box {
+            width: 300px;
+            height: 800px;
+            background-color: rgb(79, 165, 199);
+        }
+    </style>
+</head>
+<body>
+    <div style="position: fixed; top: 0; ">
+        <a href="#aaa">aaa</a>
+        <a href="#bbb">bbb</a>
+        <a href="#ccc">ccc</a>
+    </div>
+
+    <div class="box" id="aaa"></div>
+    <div class="box" id="bbb" style="background-color: red ;"></div>
+    <div class="box" id="ccc" style="background-color: green ;"></div>
+
+    <script>
+        window.addEventListener('hashchange', function(){
+            console.log(location.hash)
+        })
+
+    </script>
+</body>
+</html>
