@@ -7,6 +7,7 @@ const moment = require('moment-timezone')
 const db = require(__dirname + "/modules/db_connect2")
 const sessionStore = new MysqlStore({}, db);
 const cors = require("cors")
+const axios = require("axios")
 
 express.shinder = '您好';
 // const multer = require('multer');
@@ -216,6 +217,11 @@ app.get("/logout",(req,res)=>{
     res.redirect("/");
 });
 
+//假網站
+app.get("/yahoo",async (req,res)=>{
+    const response = await axios.get("http://tw.yahoo.com/");
+    res.send(response.data)
+});
 
 
 //----------------------------------------------
