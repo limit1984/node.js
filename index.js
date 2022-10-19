@@ -24,7 +24,7 @@ app.set('view engine', 'ejs');
 // top-level middleware
 
 const corsOptions = {
-    Credentias: true ,
+    Credentias: true,
 
 }
 
@@ -43,12 +43,12 @@ app.use(session({
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 
-app.use((req,res,next)=>{
+app.use((req, res, next) => {
 
-//自己定義的 tamplate helper functions
+    //自己定義的 tamplate helper functions
 
-    res.locals.toDateString=(d)=>moment(d).format("YYYY-MM-DD");
-    res.locals.toDatetimeString = (d)=>moment(d).format("YYYY-MM-DD HH:mm:ss");
+    res.locals.toDateString = (d) => moment(d).format("YYYY-MM-DD");
+    res.locals.toDatetimeString = (d) => moment(d).format("YYYY-MM-DD HH:mm:ss");
 
     res.locals.title = "小新的網站";
     res.locals.session = req.session;
@@ -178,7 +178,7 @@ app.get("/try-db-add", async (req, res) => {
     const address = "宜蘭縣";
     const sql = "INSERT INTO `address_book`(`name`, `email`, `mobile`, `birthday`, `address`, `created_at`) VALUES (?,?,?,?,?,now())";
 
-    const [result] = await db.query(sql,[name,email,mobile,birthday,address]);
+    const [result] = await db.query(sql, [name, email, mobile, birthday, address]);
     res.json(result);
 
     //直接取值
@@ -195,33 +195,83 @@ app.get("/try-db-add2", async (req, res) => {
     const address = "宜蘭縣";
     const sql = "INSERT INTO `address_book` SET ? ";
 
-    const [result] = await db.query(sql,[{name,email,mobile,birthday,address,created_at: new Date()}]);
+    const [result] = await db.query(sql, [{ name, email, mobile, birthday, address, created_at: new Date() }]);
     res.json(result);
 
 })
 
-app.use("/ab",require(__dirname +"/routes/address-book"));
+app.use("/ab", require(__dirname + "/routes/address-book"));
 
-app.get("/fake-login",(req,res)=>{
+app.get("/fake-login", (req, res) => {
     req.session.admin = {
-        id : 12,
-        account : "shinder",
-        nickname : "小新"
+        id: 12,
+        account: "shinder",
+        nickname: "小新"
     };
 
     res.redirect("/");
 });
-app.get("/logout",(req,res)=>{
+app.get("/logout", (req, res) => {
     delete req.session.admin;
 
     res.redirect("/");
 });
 
 //假網站
-app.get("/yahoo",async (req,res)=>{
+app.get("/yahoo", async (req, res) => {
     const response = await axios.get("http://tw.yahoo.com/");
     res.send(response.data)
 });
+
+app.get("/cate", async (req, res) => {
+    const [rows] = await db.query("SELECT * FROM categories")
+
+    const firsts = []
+    for (let i of rows) {
+        if (i.parent_sid === 0) {
+            firsts.push(i)
+        }
+    }
+
+    for (let f of firsts) {
+        for (let i of rows) {
+            if (f.sid === i.parent_sid) {
+                f.children ||= [];
+                f.children.push(i)
+            }
+        }
+    }
+
+    res.json(rows)
+})
+
+app.get("/cate2", async (req, res) => {
+    const [rows] = await db.query("SELECT * FROM categories")
+
+    const dict = {}
+    // 編輯字典
+    for (let i of rows) {
+        dict[i.sid] = i;
+    }
+    
+    for (let i of rows) {
+        if (i.parent_sid != 0) {
+            const p = dict[i.parent_sid]
+            p.children ||= [];
+            p.children.push(i)
+        }
+    }
+
+
+    // 把第一層拿出來
+    const firsts = []
+    for(let i of rows){
+        if(i.parent_sid === 0){
+            firsts.push(i);
+        }
+    }
+    res.json(rows)
+})
 
 
 //----------------------------------------------
